@@ -10,6 +10,7 @@
       imports = [
         ./../profiles/common.nix
         ./../profiles/service.nix
+        ./../users/users-admin.nix
       ];
 
       networking.firewall.allowedTCPPorts = [ 80 ];
@@ -20,6 +21,7 @@
 
       imports = [
         ./../profiles/common.nix
+        ./../users/users-admin.nix
       ];
     };
   };
