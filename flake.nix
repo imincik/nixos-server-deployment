@@ -80,13 +80,13 @@
             function dev-help {
               echo -e "\nWelcome to a NixOS server development environment !"
               echo
-              echo "Explore server configuration:"
-              echo
-              echo " 1.  nix repl ./repl.nix --argstr hostname <hostname>"
-              echo
               echo "Run server in VM:"
               echo
               echo " 1.  nix run .#<hostname>"
+              echo
+              echo "Explore server configuration:"
+              echo
+              echo " 1.  nix repl ./repl.nix --argstr hostname <hostname>"
               echo
               echo "Run tests:"
               echo
