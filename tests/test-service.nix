@@ -36,7 +36,7 @@
           server.execute("echo test > /var/lib/files/test.txt")
 
           client.succeed("""
-              curl --fail http://server:80/test.txt | grep test
+              curl --retry 3 --fail http://server:80/test.txt | grep test
           """)
     '';
 }
