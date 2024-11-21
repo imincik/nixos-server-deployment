@@ -11,5 +11,6 @@
 
     # system users
     ../../users/users-admin.nix
+    ../../users/users-dev.nix
   ];
 }
