@@ -1,10 +1,9 @@
 { config, pkgs, ... }:
 
-# Password hash generation:
-# echo "<PASSWORD>" | mkpasswd --stdin --method=yescrypt
+# List of server users with super user permissions.
 
 let
-  extraGroups = [ "wheel" "vboxusers" ];
+  extraGroups = [ "wheel" ];
 
 in
 {
@@ -13,7 +12,7 @@ in
     isNormalUser = true;
     home = "/home/imincik";
     extraGroups = extraGroups;
-    password = "";
+    password = "";  # WARNING: remove this line for production !
     openssh.authorizedKeys.keyFiles = [ ./imincik.pub ];
     shell = pkgs.bash;
   };
