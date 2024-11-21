@@ -13,7 +13,7 @@ in
     isNormalUser = true;
     home = "/home/imincik";
     extraGroups = extraGroups;
-    hashedPassword = "$y$j9T$9gVElYYav0CJTPm9LghtP/$RpYw55FXiUvNYgSkgS8ijhMwX9nWLNJxD38AcSfVZgB";
+    password = "";
     openssh.authorizedKeys.keyFiles = [ ./imincik.pub ];
     shell = pkgs.bash;
   };

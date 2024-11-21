@@ -11,7 +11,7 @@ in
     description = "Test User 1";
     isNormalUser = true;
     home = "/home/user1";
-    initialPassword = "user1";
+    password = "";
     extraGroups = extraGroups;
 
     openssh.authorizedKeys.keyFiles = remoteSupportSSHKeys;
@@ -21,7 +21,7 @@ in
     description = "Test User 2";
     isNormalUser = true;
     home = "/home/user2";
-    initialPassword = "user2";
+    password = "";
     extraGroups = extraGroups;
 
     openssh.authorizedKeys.keyFiles = remoteSupportSSHKeys;
