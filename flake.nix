@@ -12,37 +12,34 @@
     agenix = {
       url = "github:ryantm/agenix/0.13.0";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.darwin.follows = "";
     };
   };
 
   outputs = inputs@{ self, nixpkgs, agenix }:
 
     let
-      system = "x86_64-linux";
+      # Flake system
+      supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
+      forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+
+      # Version
       stateVersion = "24.11";
-
       srcRevision = if self ? rev then self.rev else "dirty";
-
       systemMeta = {
         configurationRevision = srcRevision;
         stateVersion = stateVersion;
       };
 
-      pkgs = import nixpkgs {
-        inherit system;
-        config = { allowUnfree = true; };
-      };
-
       # Make NixOS server host
       mkHost = hostname: nixpkgs.lib.nixosSystem {
-        inherit system;
         modules = [
           ./hosts/${hostname}
         ];
         specialArgs = { inherit inputs hostname systemMeta; };
       };
 
+      # Make NixOS VM
       mkVm = hostname: {
         type = "app";
         program = "${self.nixosConfigurations.${hostname}.config.system.build.vm}/bin/run-${hostname}-vm";
@@ -60,75 +57,73 @@
         server2 = mkHost "server2";
       };
 
-      apps.${system} = {
+      apps = forAllSystems (system: {
         server1 = mkVm "server1";
         server2 = mkVm "server2";
-      };
+      });
 
 
       #
       ### SHELLS
       #
 
-      devShells.${system} = rec {
+      devShells = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
 
-        # development environment
-        dev = pkgs.mkShell {
-          buildInputs = [ ];
+        {
+          # development environment
+          default = pkgs.mkShell {
 
-          shellHook = ''
-            function dev-help {
-              echo -e "\nWelcome to a NixOS server development environment !"
-              echo
-              echo "Show this flake content:"
-              echo
-              echo "     nix flake show"
-              echo
-              echo "Run server in VM:"
-              echo
-              echo "     nix run .#<hostname>"
-              echo
-              echo "Explore server configuration:"
-              echo
-              echo "     nix repl ./repl.nix --argstr hostname <hostname>"
-              echo
-              echo "Run tests:"
-              echo
-              echo "     nix flake check"
-              echo
-              echo "Launch interactive test environment:"
-              echo
-              echo " 1.  nix build .\#test-service.driverInteractive"
-              echo " 2.  ./result/bin/nixos-test-driver"
-              echo " 3.  start_all()"
-              echo
-              echo "Run 'dev-help' to see this message again."
-            }
+            buildInputs = [ ];
 
-            dev-help
-          '';
-        };
+            shellHook = ''
+              function dev-help {
+                echo -e "\nWelcome to a NixOS server development environment !"
+                echo
+                echo "Show this flake content:"
+                echo
+                echo "     nix flake show"
+                echo
+                echo "Run server in VM:"
+                echo
+                echo "     nix run .#<hostname>"
+                echo
+                echo "Run tests:"
+                echo
+                echo "     nix flake check"
+                echo
+                echo "Launch interactive test environment:"
+                echo
+                echo " 1.  nix build .#checks.<system>.<test>.driverInteractive"
+                echo " 2.  ./result/bin/nixos-test-driver"
+                echo " 3.  start_all()"
+                echo
+                echo "Explore server configuration:"
+                echo
+                echo "     nix repl ./repl.nix --argstr hostname <hostname>"
+                echo
+                echo "Run 'dev-help' to see this message again."
+              }
 
-        # # Admin shell
-        # admin = pkgs.mkShell {
-        #   buildInputs = [
-        #     # secrets management
-        #     agenix.packages.${system}.agenix
-        #   ];
-        # };
-
-        default = dev;
-      };
+              dev-help
+            '';
+          };
+        });
 
 
       #
       ### CHECKS
       #
 
-      test-service = pkgs.nixosTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
+      checks = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
 
-      checks.${system} = {
-        test-server1 = self.test-service;
-      };
+        {
+          test-server1 = pkgs.nixosTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
+        });
     };
 }
