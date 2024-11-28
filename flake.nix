@@ -96,9 +96,8 @@
                 echo
                 echo "Launch interactive test environment:"
                 echo
-                echo " 1.  nix build .#checks.<system>.<test>.driverInteractive"
-                echo " 2.  ./result/bin/nixos-test-driver"
-                echo " 3.  start_all()"
+                echo "     nix run .#checks.<system>.<test>.driverInteractive -- interactive"
+                echo "     start_all()"
                 echo
                 echo "Explore server configuration:"
                 echo
@@ -123,7 +122,7 @@
         in
 
         {
-          test-server1 = pkgs.nixosTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
+          test-server1 = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
         });
     };
 }
