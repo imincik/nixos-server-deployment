@@ -11,7 +11,6 @@
   # SSH
   services.openssh = {
     enable = true;
-    ports = [ 5037 ];
     openFirewall = true;
     settings = {
       PermitRootLogin = "no";
