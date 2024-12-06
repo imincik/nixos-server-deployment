@@ -53,11 +53,13 @@
       #
 
       nixosConfigurations = {
+        # <hostname> = mkHost "<hostname>";
         server1 = mkHost "server1";
         server2 = mkHost "server2";
       };
 
       apps = forAllSystems (system: {
+        # <hostname> = mkVm "<hostname>";
         server1 = mkVm "server1";
         server2 = mkVm "server2";
       });
@@ -73,7 +75,7 @@
         in
 
         {
-          # development environment
+          # Development environment
           default = pkgs.mkShell {
 
             buildInputs = [ ];
@@ -122,6 +124,8 @@
         in
 
         {
+          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs systemMeta; });
+          
           test-server1 = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
         });
     };
