@@ -21,7 +21,7 @@
       # Flake system
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; });
+      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; config.allowUnfree = true; });
 
       # Version
       stateVersion = "24.11";
@@ -98,9 +98,8 @@
                 echo
                 echo "Launch interactive test environment:"
                 echo
-                echo " 1.  nix build .#checks.<system>.<test>.driverInteractive"
-                echo " 2.  ./result/bin/nixos-test-driver"
-                echo " 3.  start_all()"
+                echo "     nix run .#checks.<system>.<test>.driverInteractive -- --interactive"
+                echo "     start_all()"
                 echo
                 echo "Explore server configuration:"
                 echo
@@ -125,13 +124,9 @@
         in
 
         {
-          # <test-name> = pkgs.nixosTest (
-          #   import ./tests/<test-script.nix> { inherit inputs systemMeta; }
-          # );
-
-          test-server1 = pkgs.nixosTest (
-            import ./tests/test-service.nix { inherit inputs systemMeta; }
-          );
+          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-file>.nix { inherit inputs systemMeta; });
+          
+          test-server1 = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
         });
     };
 }
