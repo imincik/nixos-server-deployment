@@ -96,7 +96,7 @@
                 echo
                 echo "Launch interactive test environment:"
                 echo
-                echo "     nix run .#checks.<system>.<test>.driverInteractive -- interactive"
+                echo "     nix run .#checks.<system>.<test>.driverInteractive -- --interactive"
                 echo "     start_all()"
                 echo
                 echo "Explore server configuration:"
