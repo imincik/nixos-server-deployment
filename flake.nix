@@ -124,7 +124,7 @@
         in
 
         {
-          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-file>.nix { inherit inputs systemMeta; });
+          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs systemMeta; });
           
           test-server1 = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
         });
