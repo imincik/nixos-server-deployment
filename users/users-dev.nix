@@ -4,7 +4,7 @@
 
 let
   # SSH keys used for remote user support
-  remoteSupportSSHKeys = [ ./imincik.pub ];
+  remoteSupportSSHKeys = [ ./admin.pub ];
   extraGroups = [ ];
 
 in
