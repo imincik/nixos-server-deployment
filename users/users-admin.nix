@@ -7,13 +7,13 @@ let
 
 in
 {
-  users.users.imincik = {
-    description = "Ivan Mincik (admin)";
+  users.users.admin= {
+    description = "System superuser";
     isNormalUser = true;
-    home = "/home/imincik";
+    home = "/home/admin";
     extraGroups = extraGroups;
     password = "";  # WARNING: remove this line for production !
-    openssh.authorizedKeys.keyFiles = [ ./imincik.pub ];
+    openssh.authorizedKeys.keyFiles = [ ./admin.pub ];
     shell = pkgs.bash;
   };
 }
