@@ -10,7 +10,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     agenix = {
-      url = "github:ryantm/agenix/0.13.0";
+      url = "github:ryantm/agenix/0.15.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -35,6 +35,7 @@
       mkHost = hostname: nixpkgs.lib.nixosSystem {
         modules = [
           ./hosts/${hostname}
+          agenix.nixosModules.default
         ];
         specialArgs = { inherit inputs hostname systemMeta; };
       };
@@ -78,7 +79,9 @@
           # Development environment
           default = pkgs.mkShell {
 
-            buildInputs = [ ];
+            buildInputs = [
+              inputs.agenix.packages.${system}.agenix  # secrets management
+            ];
 
             shellHook = ''
               function dev-help {
@@ -125,8 +128,9 @@
 
         {
           # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs systemMeta; });
-          
-          test-server1 = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
+
+          test-service = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
+          test-secrets = pkgs.testers.runNixOSTest (import ./tests/test-secrets.nix { inherit inputs systemMeta; });
         });
     };
 }
