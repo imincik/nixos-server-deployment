@@ -50,6 +50,13 @@ nix run .#<hostname>
 nix flake check`
 ```
 
+### Port forwarding (optional)
+
+If needed, port forwarding can be configured in
+[profiles/development.nix](profiles/development.nix) file. This file must be
+included in host declaration file `hosts/<hostname>/default.nix`
+(see: [hosts/server1/default.nix](hosts/server1/default.nix) for example).
+
 
 ## Secrets management
 

@@ -13,5 +13,8 @@
     # system users
     ../../users/users-admin.nix
     ../../users/users-dev.nix
+
+    # development (do not include for production !)
+    ../../profiles/development.nix
   ];
 }
