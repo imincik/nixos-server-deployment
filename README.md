@@ -51,9 +51,28 @@ nix flake check`
 ```
 
 
+## Secrets management
+
+1. Create identities (users and/or systems able to use secrets) and secrets in
+   [secrets/secrets.nix](secrets/secrets.nix) file
+
+1. Create a encrypted file for each secret
+
+```bash
+  nix develop
+  agenix -e <SECRET-NAME>.age
+```
+
+1. Use secret in NixOS module
+   (see: [profiles/secrets.nix](profiles/secrets.nix) for example)
+
+For more information check out
+[Agenix tutorial](https://github.com/ryantm/agenix/tree/main?tab=readme-ov-file#tutorial).
+
+
 ## Deployment
 
-1. Initial deployment: TODO - nixos-anywhere
+1. TODO - nixos-anywhere
 
 
 ## Maintenance
