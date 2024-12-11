@@ -1,7 +1,12 @@
-{ inputs, config, pkgs, lib, hostname, ... }:
+{ inputs, outputs, config, pkgs, lib, hostname, ... }:
 
 {
   networking.hostName = hostname;
+
+  nixpkgs = {
+    config.allowUnfree = true;
+    overlays = [ outputs.overlays.default ];
+  };
 
   imports = [
     ./hardware.nix
