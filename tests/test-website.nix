@@ -9,7 +9,7 @@
 
       imports = [
         ./../profiles/common.nix
-        ./../profiles/service.nix
+        ./../profiles/website.nix
         ./../users/users-admin.nix
       ];
 
@@ -33,10 +33,8 @@
       with subtest("Test http service"):
           server.wait_for_unit("lighttpd.service")
 
-          server.execute("echo test > /var/lib/files/test.txt")
-
           client.succeed("""
-              curl --retry 3 --fail http://server:80/test.txt | grep test
+              curl --retry 3 --fail http://server:80 | grep "It works"
           """)
     '';
 }

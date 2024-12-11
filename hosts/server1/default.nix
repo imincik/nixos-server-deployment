@@ -7,7 +7,7 @@
     ./hardware.nix
 
     ../../profiles/common.nix
-    ../../profiles/service.nix
+    ../../profiles/website.nix
     ../../profiles/auto-upgrade.nix
 
     # system users
