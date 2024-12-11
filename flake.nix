@@ -19,9 +19,14 @@
 
     let
       # Flake system
+      targetSystem = "x86_64-linux";
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
-      nixpkgsFor = forAllSystems (system: import nixpkgs { inherit system; config.allowUnfree = true; });
+      nixpkgsFor = forAllSystems (system: import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+        overlays = [ self.overlays.default ];
+      });
 
       # Version
       stateVersion = "24.11";
@@ -37,7 +42,10 @@
           ./hosts/${hostname}
           agenix.nixosModules.default
         ];
-        specialArgs = { inherit inputs hostname systemMeta; };
+        specialArgs = {
+          inherit inputs hostname systemMeta;
+          pkgs = nixpkgsFor.${targetSystem};
+        };
       };
 
       # Make NixOS VM
@@ -67,6 +75,30 @@
 
 
       #
+      ### PACKAGES
+      #
+
+      packages = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
+        {
+          inherit (pkgs) my-website;
+        });
+
+
+      #
+      ### OVERLAYS
+      #
+
+      overlays.default =
+        final: prev:
+        {
+          my-website = final.callPackage ./pkgs/website { };
+        };
+
+
+      #
       ### SHELLS
       #
 
@@ -80,7 +112,7 @@
           default = pkgs.mkShell {
 
             buildInputs = [
-              inputs.agenix.packages.${system}.agenix  # secrets management
+              inputs.agenix.packages.${system}.agenix # secrets management
             ];
 
             shellHook = ''
@@ -129,7 +161,7 @@
         {
           # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs systemMeta; });
 
-          test-service = pkgs.testers.runNixOSTest (import ./tests/test-service.nix { inherit inputs systemMeta; });
+          test-website = pkgs.testers.runNixOSTest (import ./tests/test-website.nix { inherit inputs systemMeta; });
           test-secrets = pkgs.testers.runNixOSTest (import ./tests/test-secrets.nix { inherit inputs systemMeta; });
         });
     };
