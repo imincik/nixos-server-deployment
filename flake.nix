@@ -16,10 +16,10 @@
   };
 
   outputs = inputs@{ self, nixpkgs, agenix }:
-
     let
+      inherit (self) outputs;
+
       # Flake system
-      targetSystem = "x86_64-linux";
       supportedSystems = [ "x86_64-linux" "x86_64-darwin" "aarch64-linux" "aarch64-darwin" ];
       forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
       nixpkgsFor = forAllSystems (system: import nixpkgs {
@@ -43,8 +43,7 @@
           agenix.nixosModules.default
         ];
         specialArgs = {
-          inherit inputs hostname systemMeta;
-          pkgs = nixpkgsFor.${targetSystem};
+          inherit inputs outputs hostname systemMeta;
         };
       };
 
@@ -159,10 +158,10 @@
         in
 
         {
-          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs systemMeta; });
+          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs outputs systemMeta; });
 
-          test-website = pkgs.testers.runNixOSTest (import ./tests/test-website.nix { inherit inputs systemMeta; });
-          test-secrets = pkgs.testers.runNixOSTest (import ./tests/test-secrets.nix { inherit inputs systemMeta; });
+          test-website = pkgs.nixosTest (import ./tests/test-website.nix { inherit inputs outputs systemMeta; });
+          test-secrets = pkgs.nixosTest (import ./tests/test-secrets.nix { inherit inputs outputs systemMeta; });
         });
     };
 }
