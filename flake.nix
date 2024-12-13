@@ -135,10 +135,6 @@
                 echo "     nix run .#checks.<system>.<test>.driverInteractive -- --interactive"
                 echo "     start_all()"
                 echo
-                echo "Explore server configuration:"
-                echo
-                echo "     nix repl ./repl.nix --argstr hostname <hostname>"
-                echo
                 echo "Run 'dev-help' to see this message again."
               }
 

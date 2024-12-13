@@ -50,7 +50,34 @@ nix run .#<hostname>
 nix flake check`
 ```
 
-### Port forwarding (optional)
+### Explore server configuration (optional)
+
+1. Launch interactive environment
+
+```
+  nix repl ./repl.nix --argstr hostname <hostname>"
+```
+
+1. Print configuration value
+
+```
+  :p config.<option>
+```
+
+For example, print a list of enabled ssh ports
+
+```
+  :p config.services.openssh.ports
+```
+
+or print full admin user configuration
+
+```
+  :p config.users.users.admin
+```
+.
+
+### Enable port forwarding (optional)
 
 If needed, port forwarding can be configured in
 [profiles/development.nix](profiles/development.nix) file. This file must be
