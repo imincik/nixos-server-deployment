@@ -75,7 +75,6 @@ or print full admin user configuration
 ```
   :p config.users.users.admin
 ```
-.
 
 ### Enable port forwarding (optional)
 
