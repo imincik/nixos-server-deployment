@@ -55,24 +55,6 @@
 
     in
     {
-
-      #
-      ### HOSTS
-      #
-
-      nixosConfigurations = {
-        # <hostname> = mkHost "<hostname>";
-        server1 = mkHost "server1";
-        server2 = mkHost "server2";
-      };
-
-      apps = forAllSystems (system: {
-        # <hostname> = mkVm "<hostname>";
-        server1 = mkVm "server1";
-        server2 = mkVm "server2";
-      });
-
-
       #
       ### PACKAGES
       #
@@ -85,16 +67,47 @@
           inherit (pkgs) my-website;
         });
 
-
-      #
-      ### OVERLAYS
-      #
-
       overlays.default =
         final: prev:
         {
           my-website = final.callPackage ./pkgs/website { };
         };
+
+
+      #
+      ### HOSTS
+      #
+
+      nixosConfigurations = {
+        # <hostname> = mkHost "<hostname>";
+
+        server1 = mkHost "server1";
+        server2 = mkHost "server2";
+      };
+
+      apps = forAllSystems (system: {
+        # <hostname> = mkVm "<hostname>";
+
+        server1 = mkVm "server1";
+        server2 = mkVm "server2";
+      });
+
+
+      #
+      ### CHECKS
+      #
+
+      checks = forAllSystems (system:
+        let
+          pkgs = nixpkgsFor.${system};
+        in
+
+        {
+          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs outputs systemMeta; });
+
+          test-website = pkgs.nixosTest (import ./tests/test-website.nix { inherit inputs outputs systemMeta; });
+          test-secrets = pkgs.nixosTest (import ./tests/test-secrets.nix { inherit inputs outputs systemMeta; });
+        });
 
 
       #
@@ -141,23 +154,6 @@
               dev-help
             '';
           };
-        });
-
-
-      #
-      ### CHECKS
-      #
-
-      checks = forAllSystems (system:
-        let
-          pkgs = nixpkgsFor.${system};
-        in
-
-        {
-          # <test-name> = pkgs.testers.runNixOSTest (import ./tests/<test-script>.nix { inherit inputs outputs systemMeta; });
-
-          test-website = pkgs.nixosTest (import ./tests/test-website.nix { inherit inputs outputs systemMeta; });
-          test-secrets = pkgs.nixosTest (import ./tests/test-secrets.nix { inherit inputs outputs systemMeta; });
         });
     };
 }
